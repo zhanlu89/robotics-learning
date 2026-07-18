@@ -7,18 +7,25 @@
 | 项目 | 内容 | 状态 |
 | --- | --- | --- |
 | [opencv-basics](opencv-basics/) | 使用 Python 和 C++/CMake 验证 OpenCV 图像绘制、保存与读取 | 已完成基础测试 |
+| [topic_flow_cpp](ros2_ws/src/topic_flow_cpp/) | 使用 ROS 2 C++ 验证 Topic 数据流，并将模拟视觉偏移转换为离散转向决策 | 已完成基础数据流验证 |
 
 ## 目录结构
 
 ```text
 robotics-learning/
 ├── README.md
-└── opencv-basics/
-    ├── README.md
-    ├── python_smoke_test.py
-    └── cpp_smoke_test/
-        ├── CMakeLists.txt
-        └── main.cpp
+├── opencv-basics/
+│   ├── README.md
+│   ├── python_smoke_test.py
+│   └── cpp_smoke_test/
+│       ├── CMakeLists.txt
+│       └── main.cpp
+└── ros2_ws/
+    └── src/
+        └── topic_flow_cpp/
+            ├── CMakeLists.txt
+            ├── package.xml
+            └── src/
 ```
 
 ## 开始学习
@@ -31,3 +38,35 @@ robotics-learning/
 - OpenCV 版本及生成图片位置
 
 后续的机器人学、计算机视觉、传感器和控制相关练习将继续作为新的子项目加入本仓库。
+
+## ROS 2 Topic 数据流
+
+`topic_flow_cpp` 当前包含两组学习节点：
+
+- `status_publisher` / `status_subscriber`：验证 String 消息的发布、订阅和回调；
+- `lateral_error_publisher` / `steering_decision`：循环发布模拟横向偏移，并根据容差区输出左转、直行或右转决策。
+
+构建工作区：
+
+```bash
+cd ros2_ws
+source /opt/ros/jazzy/setup.bash
+colcon build --packages-select topic_flow_cpp
+source install/setup.bash
+```
+
+分别在两个已加载系统 ROS 2 和当前工作区环境的终端运行：
+
+```bash
+ros2 run topic_flow_cpp lateral_error_publisher
+ros2 run topic_flow_cpp steering_decision
+```
+
+运行静态检查：
+
+```bash
+colcon test --packages-select topic_flow_cpp
+colcon test-result --verbose
+```
+
+当前验证结果为 24 项测试、0 errors、0 failures；详细的动态学习状态记录在 [学习进度.md](学习进度.md)。
